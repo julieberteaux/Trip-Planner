@@ -3,7 +3,7 @@ import leaflet from 'leaflet';
 import getLatitudeLongitude from './getLatitudeLongitude';
 
 class Map extends Component {
-  addTrip = () => {
+  addTripMarker = () => {
     const listTrip = this.props.trip;
 
     for (var i in listTrip) {
@@ -17,7 +17,7 @@ class Map extends Component {
       var longitude = getLatitudeLongitude(city).longitude;
       var latitude = getLatitudeLongitude(city).latitude;
       // add the marker to the map
-      leaflet
+      var marker = leaflet
         .marker([longitude, latitude], { icon: markerPlaneIcon })
         .addTo(this.mymap)
         .bindPopup(
@@ -29,6 +29,14 @@ class Map extends Component {
             city.endDate +
             '</strong>'
         );
+
+      this.mapMarkers.push(marker);
+    }
+  };
+
+  removeTripMarker = () => {
+    for (var i = 0; i < this.mapMarkers.length; i++) {
+      this.mymap.removeLayer(this.mapMarkers[i]);
     }
   };
 
@@ -41,6 +49,7 @@ class Map extends Component {
 
   componentDidMount() {
     this.mymap = leaflet.map('mapid').setView([-8.3405, 115.092], 9);
+    this.mapMarkers = [];
 
     leaflet
       .tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
@@ -57,6 +66,13 @@ class Map extends Component {
     // this.addTrip();
 
     //leaflet.marker([-8.6478, 115.1385], {icon: markerPlaneIcon }).addTo(this.mymap).bindPopup("Test");
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.trip !== this.props.trip) {
+      this.removeTripMarker();
+      this.addTripMarker();
+    }
   }
 
   render() {
