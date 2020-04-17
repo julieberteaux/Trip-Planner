@@ -12,6 +12,7 @@ const PlanningHeader = () => {
         <th>Start</th>
         <th>End</th>
         <th></th>
+        <th></th>
       </tr>
     </MDBTableHead>
   );

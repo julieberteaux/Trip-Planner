@@ -65,13 +65,6 @@ class App extends Component {
     });
   };
 
-  //Erase city in Location state
-  removeLocationMap = () => {
-    this.setState({
-      locationMap: '',
-    });
-  };
-
   // change value of state from the modal
   handleChange = (event) => {
     const { name, value } = event.target;
@@ -143,11 +136,7 @@ class App extends Component {
             </figure>
           </MDBCol>
           <MDBCol size="10">
-            <Form
-              locationMap={locationMap}
-              handleSubmit={this.handleSubmit}
-              removeLocationMap={this.removeLocationMap}
-            />
+            <Form locationMap={locationMap} handleSubmit={this.handleSubmit} />
           </MDBCol>
         </MDBRow>
         <MDBRow>

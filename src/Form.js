@@ -30,7 +30,7 @@ class Form extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.locationMap !== this.props.locationMap) {
-      const { locationMap, removeLocationMap } = this.props;
+      const { locationMap } = this.props;
       this.setState({
         location: locationMap,
       });
