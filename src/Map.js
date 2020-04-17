@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import leaflet from 'leaflet';
 import getLatitudeLongitude from './getLatitudeLongitude';
+import getCity from './getCity';
 
 class Map extends Component {
   addTripMarker = () => {
@@ -40,11 +41,24 @@ class Map extends Component {
     }
   };
 
-  onMapClick = (e) => {
+  //   onMapClick = (e) => {
+  //     this.popup
+  //       .setLatLng(e.latlng)
+  //       .setContent('You clicked the map at ' + e.latlng.toString())
+  //       .openOn(this.mymap);
+  //   };
+
+  onMapClickAddTrip = (e) => {
+    var city = getCity(e.latlng.lng);
     this.popup
       .setLatLng(e.latlng)
-      .setContent('You clicked the map at ' + e.latlng.toString())
+      .setContent(
+        'You clicked the map at ' + city.toString()
+        //<button onClick={() => props.addLocation(city)}>Add location</button>
+      )
       .openOn(this.mymap);
+
+    this.props.addLocation(city);
   };
 
   componentDidMount() {
@@ -61,7 +75,7 @@ class Map extends Component {
       .addTo(this.mymap);
 
     this.popup = leaflet.popup();
-    this.mymap.on('click', this.onMapClick);
+    this.mymap.on('click', this.onMapClickAddTrip);
 
     // this.addTrip();
 

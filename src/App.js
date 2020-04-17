@@ -17,6 +17,7 @@ class App extends Component {
     //trip: [{location :'Canggu', startDate : '2020-04-10', endDate: '2020-04-18'},{location :'Chiang-Mai', startDate : '2020-05-10', endDate: '2020-06-18'},{location :'Paris', startDate : '2020-04-01', endDate: '2020-04-09'}],
     modal: false,
     tripToEdit: {},
+    location: null,
   };
 
   componentDidMount() {
@@ -54,6 +55,13 @@ class App extends Component {
       modal: !modal,
       tripToEdit: { ...trip[index] },
       tripToEditIndex: index,
+    });
+  };
+
+  // change state of location
+  addLocation = (city) => {
+    this.setState({
+      location: city,
     });
   };
 
@@ -116,6 +124,7 @@ class App extends Component {
   render() {
     const { trip } = this.state;
     const { modal } = this.state;
+    const { location } = this.state;
     const { tripToEdit } = this.state;
 
     return (
@@ -127,13 +136,13 @@ class App extends Component {
             </figure>
           </MDBCol>
           <MDBCol size="10">
-            <Form handleSubmit={this.handleSubmit} />
+            <Form locationMap={location} handleSubmit={this.handleSubmit} />
           </MDBCol>
         </MDBRow>
         <MDBRow>
           <MDBCol size="8">
             <h2 class="title is-2 has-text-centered">My Travel Map</h2>
-            <Map trip={trip} />
+            <Map trip={trip} addLocation={this.addLocation} />
           </MDBCol>
           <MDBCol size="0">
             <Modal
