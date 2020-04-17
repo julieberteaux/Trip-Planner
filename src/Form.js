@@ -28,6 +28,22 @@ class Form extends Component {
     this.setState(this.initialState);
   };
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.locationMap !== this.props.locationMap) {
+      const { locationMap, removeLocationMap } = this.props;
+      this.setState({
+        location: locationMap,
+      });
+    }
+  }
+  // componentDidMount() {
+  //   const { locationMap, removeLocationMap } = this.props;
+  //   this.setState({
+  //     location: locationMap,
+  //   });
+  //   removeLocationMap();
+  // }
+
   render() {
     const { location, startDate, endDate } = this.state;
 

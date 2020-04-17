@@ -6,10 +6,9 @@
 //   { location: 'Gili', longitude: '-8.34', latitude: '116.03' },
 // ];
 
-function getCity(long) {
+function getCity(lat) {
   var city = '';
-  console.log(long);
-  if (long >= '0') {
+  if (lat <= '0') {
     city = 'Canggu';
   } else {
     city = 'Paris';
