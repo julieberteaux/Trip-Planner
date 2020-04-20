@@ -1,39 +1,68 @@
 import React, { Component } from 'react';
 import leaflet from 'leaflet';
-import getLatitudeLongitude from './getLatitudeLongitude';
-import getCity from './getCity';
+import 'leaflet-control-geocoder';
 
 class Map extends Component {
   addTripMarker = () => {
     const listTrip = this.props.trip;
+    const geocoder = leaflet.Control.Geocoder.nominatim();
 
-    for (var i in listTrip) {
+    listTrip.forEach((city) => {
       var markerPlaneIcon = leaflet.icon({
         iconUrl: '/icons/map-plane-marker.png',
         iconSize: [45, 50],
         iconAnchor: [20, 50],
         popupAnchor: [4, -50],
       });
-      var city = listTrip[i];
-      var longitude = getLatitudeLongitude(city).longitude;
-      var latitude = getLatitudeLongitude(city).latitude;
-      // add the marker to the map
-      var marker = leaflet
-        .marker([longitude, latitude], { icon: markerPlaneIcon })
-        .addTo(this.mymap)
-        .bindPopup(
-          'Destination: <strong>' +
-            city.location +
-            '</strong><br/>Start: <strong>' +
-            city.startDate +
-            '</strong><br/>End:<strong>' +
-            city.endDate +
-            '</strong>'
-        );
 
-      this.mapMarkers.push(marker);
-    }
+      geocoder.geocode(city.location, (results) => {
+        var latLng = new leaflet.LatLng(results[0].center.lat, results[0].center.lng);
+        console.log(city.location);
+
+        var marker = leaflet
+          .marker(latLng, { icon: markerPlaneIcon })
+          .addTo(this.mymap)
+          .bindPopup(
+            'Destination: <strong>' +
+              city.location +
+              '</strong><br/>Start: <strong>' +
+              city.startDate +
+              '</strong><br/>End:<strong>' +
+              city.endDate +
+              '</strong>'
+          );
+
+        this.mapMarkers.push(marker);
+      });
+    });
   };
+
+  // for (var i in listTrip) {
+  //   var markerPlaneIcon = leaflet.icon({
+  //     iconUrl: '/icons/map-plane-marker.png',
+  //     iconSize: [45, 50],
+  //     iconAnchor: [20, 50],
+  //     popupAnchor: [4, -50],
+  //   });
+  //   var city = listTrip[i];
+  //   var longitude = getLatitudeLongitude(city).longitude;
+  //   var latitude = getLatitudeLongitude(city).latitude;
+  //   // add the marker to the map
+  //   var marker = leaflet
+  //     .marker([longitude, latitude], { icon: markerPlaneIcon })
+  //     .addTo(this.mymap)
+  //     .bindPopup(
+  //       'Destination: <strong>' +
+  //         city.location +
+  //         '</strong><br/>Start: <strong>' +
+  //         city.startDate +
+  //         '</strong><br/>End:<strong>' +
+  //         city.endDate +
+  //         '</strong>'
+  //     );
+
+  //   this.mapMarkers.push(marker);
+  // }
 
   removeTripMarker = () => {
     for (var i = 0; i < this.mapMarkers.length; i++) {
@@ -49,16 +78,27 @@ class Map extends Component {
   //   };
 
   onMapClickAddTrip = (e) => {
-    var city = getCity(e.latlng.lat);
-    this.popup
-      .setLatLng(e.latlng)
-      .setContent(
-        'You clicked the map at ' + city.toString()
-        //<button onClick={() => props.addLocation(city)}>Add location</button>
-      )
-      .openOn(this.mymap);
-
-    this.props.addLocationMap(city);
+    const geocoder = leaflet.Control.Geocoder.nominatim();
+    let marker;
+    geocoder.reverse(e.latlng, this.mymap.options.crs.scale(this.mymap.getZoom()), (results) => {
+      var city = results[0];
+      console.log(city);
+      if (city) {
+        if (marker) {
+          marker
+            .setLatLng(city.center)
+            .setPopupContent(city.html || city.name)
+            .openPopup();
+        } else {
+          marker = leaflet
+            .marker(city.center)
+            .bindPopup('You clicked the map at ' + city.name)
+            .addTo(this.mymap)
+            .openPopup();
+          this.props.addLocationMap(city.name);
+        }
+      }
+    });
   };
 
   componentDidMount() {
