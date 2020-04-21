@@ -79,14 +79,6 @@ class App extends Component {
   /* if we don't put an async method, the function might start setState and call saveData before finishing the setState part.
     To avoid this we put async (arguments) in the header of the function and await before the part we need to finish before going further */
   onFormSubmit = async (event) => {
-    /*event.preventDefault();
-        const { tripToEdit, tripToEditIndex, trip  } = this.state;
-        trip[tripToEditIndex] = tripToEdit;
-        console.log(trip[tripToEditIndex])
-        this.setState({
-            trip,
-            modal : false
-        });*/
     event.preventDefault();
     const { tripToEdit, tripToEditIndex } = this.state;
     await this.setState(
@@ -122,29 +114,30 @@ class App extends Component {
   };
 
   render() {
-    const { trip } = this.state;
-    const { modal } = this.state;
-    const { locationMap } = this.state;
-    const { tripToEdit } = this.state;
-
+    const { trip, modal, locationMap, tripToEdit } = this.state;
     return (
-      <MDBContainer size="lg">
+      <MDBContainer>
         <MDBRow>
-          <MDBCol>
-            <figure class="image is-128x128">
-              <img src="pngfuel.com-2.png" alt="Logo" />
+          <MDBCol middle size="2">
+            <figure class="figure">
+              <img
+                src="/icons/logo.png"
+                alt="Logo"
+                classname="figure-img img-fluid z-depth-1"
+                style={{ width: '150px' }}
+              />
             </figure>
           </MDBCol>
-          <MDBCol size="10">
+          <MDBCol middle size="10">
             <Form locationMap={locationMap} handleSubmit={this.handleSubmit} />
           </MDBCol>
         </MDBRow>
         <MDBRow>
-          <MDBCol size="8">
+          <MDBCol middle size="8">
             <h2 class="title is-2 has-text-centered">My Travel Map</h2>
             <Map trip={trip} addLocationMap={this.addLocationMap} />
           </MDBCol>
-          <MDBCol size="0">
+          <MDBCol middle size="0">
             <Modal
               modal={modal}
               toggle={this.toggle}
@@ -153,7 +146,7 @@ class App extends Component {
               onFormSubmit={this.onFormSubmit}
             />
           </MDBCol>
-          <MDBCol size="3">
+          <MDBCol middle size="3">
             <h2 class="title is-2 has-text-centered">My Planning</h2>
             <Planning tripData={trip} removeTrip={this.removeTrip} toggle={this.toggle} />
           </MDBCol>
@@ -164,6 +157,3 @@ class App extends Component {
 }
 
 export default App;
-
-/*
- */

@@ -47,12 +47,17 @@ const PlanningBody = (props) => {
 
 const Planning = (props) => {
   const { tripData, removeTrip, toggle } = props;
-  return (
-    <MDBTable hover>
-      <PlanningHeader />
-      <PlanningBody tripData={tripData} removeTrip={removeTrip} toggle={toggle} />
-    </MDBTable>
-  );
+
+  if (tripData === {}) {
+    return <h2>You don't have any trip planned yet</h2>;
+  } else {
+    return (
+      <MDBTable hover>
+        <PlanningHeader />
+        <PlanningBody tripData={tripData} removeTrip={removeTrip} toggle={toggle} />
+      </MDBTable>
+    );
+  }
 };
 
 export default Planning;

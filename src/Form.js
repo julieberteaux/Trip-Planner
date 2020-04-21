@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { MDBRow, MDBCol, MDBInput, MDBBtn } from 'mdbreact';
 
 class Form extends Component {
   constructor(props) {
@@ -49,64 +50,46 @@ class Form extends Component {
 
     return (
       <form onSubmit={this.onFormSubmit}>
-        <div class="columns is-vcentered">
-          <div class="column is-4">
-            <div class="field">
-              <label class="label">Destination</label>
-              <div class="control">
-                <input
-                  class="input"
-                  type="text"
-                  name="location"
-                  id="location"
-                  placeholder="enter your next destination"
-                  value={location}
-                  onChange={this.handleChange}
-                ></input>
-              </div>
-            </div>
-          </div>
-          <div class="column is-3">
-            <div class="field">
-              <label class="label">Start</label>
-              <div class="control">
-                <input
-                  class="input"
-                  type="date"
-                  name="startDate"
-                  id="startDate"
-                  placeholder="jj/mm/YYYY"
-                  value={startDate}
-                  onChange={this.handleChange}
-                ></input>
-              </div>
-            </div>
-          </div>
-          <div class="column is-3">
-            <div class="field">
-              <label class="label">End</label>
-              <div class="control">
-                <input
-                  class="input"
-                  type="date"
-                  name="endDate"
-                  id="endDate"
-                  placeholder="jj/mm/YYYY"
-                  value={endDate}
-                  onChange={this.handleChange}
-                ></input>
-              </div>
-            </div>
-          </div>
-          <div class="column has-text-centered is-2">
-            <br />
-            <div class="control">
-              <button type="submit" class="button is-link">
-                Add to my planning
-              </button>
-            </div>
-          </div>
-        </div>
+        <MDBRow>
+          <MDBCol md="4">
+            <MDBInput
+              icon="globe-americas"
+              label="Choose your next destination"
+              type="text"
+              name="location"
+              id="location"
+              value={location}
+              onChange={this.handleChange}
+            />
+          </MDBCol>
+          <MDBCol md="3">
+            <MDBInput
+              icon="calendar-alt"
+              label="beginning of your trip"
+              type="date"
+              name="startDate"
+              id="startDate"
+              value={startDate}
+              onChange={this.handleChange}
+            />
+          </MDBCol>
+          <MDBCol md="3">
+            <MDBInput
+              icon="calendar-alt"
+              label="end of your trip"
+              type="date"
+              name="endDate"
+              id="endDate"
+              value={endDate}
+              onChange={this.handleChange}
+            />
+          </MDBCol>
+          <MDBCol md="2">
+            <MDBBtn gradient="blue" type="submit">
+              Add your new trip
+            </MDBBtn>
+          </MDBCol>
+        </MDBRow>
       </form>
     );
   }

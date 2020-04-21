@@ -1,5 +1,15 @@
 import React, { Component } from 'react';
-import { MDBContainer, MDBBtn, MDBModal, MDBModalBody, MDBModalHeader, MDBModalFooter } from 'mdbreact';
+import {
+  MDBContainer,
+  MDBBtn,
+  MDBModal,
+  MDBModalBody,
+  MDBModalHeader,
+  MDBModalFooter,
+  MDBRow,
+  MDBCol,
+  MDBInput,
+} from 'mdbreact';
 
 class Modal extends Component {
   render() {
@@ -7,67 +17,57 @@ class Modal extends Component {
 
     return (
       <MDBContainer>
-        <MDBModal isOpen={modal} toggle={toggle}>
+        <MDBModal isOpen={modal} toggle={toggle} centered>
           <MDBModalHeader toggle={toggle}>Edit YOUUUUR trip</MDBModalHeader>
           <form onSubmit={onFormSubmit}>
             <MDBModalBody>
-              <div class="columns is-vcentered">
-                <div class="column is-4">
-                  <div class="field">
-                    <label class="label">Destination</label>
-                    <div class="control">
-                      <input
-                        class="input"
-                        type="text"
-                        name="location"
-                        id="location"
-                        value={tripToEdit.location}
-                        onChange={handleChange}
-                      ></input>
-                    </div>
-                  </div>
-                </div>
-                <div class="column is-3">
-                  <div class="field">
-                    <label class="label">Start</label>
-                    <div class="control">
-                      <input
-                        class="input"
-                        type="date"
-                        name="startDate"
-                        id="startDate"
-                        value={tripToEdit.startDate}
-                        onChange={handleChange}
-                      ></input>
-                    </div>
-                  </div>
-                </div>
-                <div class="column is-3">
-                  <div class="field">
-                    <label class="label">End</label>
-                    <div class="control">
-                      <input
-                        class="input"
-                        type="date"
-                        name="endDate"
-                        id="endDate"
-                        value={tripToEdit.endDate}
-                        onChange={handleChange}
-                      ></input>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <MDBRow>
+                <MDBCol>
+                  <MDBInput
+                    icon="globe-americas"
+                    label="Destination"
+                    type="text"
+                    name="location"
+                    id="location"
+                    value={tripToEdit.location}
+                    onChange={handleChange}
+                  />
+                </MDBCol>
+              </MDBRow>
+              <MDBRow>
+                <MDBCol>
+                  <MDBInput
+                    icon="calendar-alt"
+                    label="Start"
+                    type="date"
+                    name="startDate"
+                    id="startDate"
+                    value={tripToEdit.startDate}
+                    onChange={handleChange}
+                  />
+                </MDBCol>
+              </MDBRow>
+              <MDBRow>
+                <MDBCol>
+                  <MDBInput
+                    icon="calendar-alt"
+                    label="End"
+                    type="date"
+                    name="endDate"
+                    id="endDate"
+                    value={tripToEdit.endDate}
+                    onChange={this.handleChange}
+                  />
+                </MDBCol>
+              </MDBRow>
             </MDBModalBody>
             <MDBModalFooter>
               <MDBBtn gradient="peach" onClick={toggle}>
                 Close
               </MDBBtn>
-              <div class="control">
-                <MDBBtn type="submit" gradient="aqua" class="button is-link">
-                  Save changes
-                </MDBBtn>
-              </div>
+              <MDBBtn type="submit" gradient="aqua">
+                Save changes
+              </MDBBtn>
             </MDBModalFooter>
           </form>
         </MDBModal>

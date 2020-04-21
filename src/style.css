@@ -2,3 +2,9 @@
   height: 400px;
   width: 100%;
 }
+
+.unstyled-button {
+  border: none;
+  padding: 2 px;
+  background: none;
+}
