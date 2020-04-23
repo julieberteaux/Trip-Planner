@@ -37,13 +37,6 @@ class Form extends Component {
       });
     }
   }
-  // componentDidMount() {
-  //   const { locationMap, removeLocationMap } = this.props;
-  //   this.setState({
-  //     location: locationMap,
-  //   });
-  //   removeLocationMap();
-  // }
 
   render() {
     const { location, startDate, endDate } = this.state;
@@ -84,9 +77,9 @@ class Form extends Component {
               onChange={this.handleChange}
             />
           </MDBCol>
-          <MDBCol md="2">
+          <MDBCol middle left md="2">
             <MDBBtn gradient="blue" type="submit">
-              Add your new trip
+              Add
             </MDBBtn>
           </MDBCol>
         </MDBRow>

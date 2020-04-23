@@ -3,59 +3,101 @@ import Planning from './Planning';
 import Form from './Form';
 import Modal from './Modal';
 import Map from './Map';
-import update from 'immutability-helper';
-import { MDBContainer, MDBCol, MDBRow } from 'mdbreact';
+import { MDBContainer, MDBCol, MDBRow, MDBBtn, MDBIcon, MDBTypography } from 'mdbreact';
+import { Redirect } from 'react-router-dom';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'leaflet/dist/leaflet.css';
 import './style.css';
 
+const SERVER_URL = 'https://julie-trip-planner.herokuapp.com';
+
 class App extends Component {
-  // list of trip
   state = {
     trip: [],
-    //trip: [{location :'Canggu', startDate : '2020-04-10', endDate: '2020-04-18'},{location :'Chiang-Mai', startDate : '2020-05-10', endDate: '2020-06-18'},{location :'Paris', startDate : '2020-04-01', endDate: '2020-04-09'}],
     modal: false,
     tripToEdit: {},
     locationMap: '',
+    accessToken: '',
+    userId: '',
+    logOut: false,
   };
 
-  componentDidMount() {
-    const tripString = localStorage.getItem('trip');
-    if (tripString) {
-      try {
-        this.setState({ trip: JSON.parse(tripString) });
-      } catch (e) {
-        this.setState({ trip: [] });
-      }
-    } else {
-      this.setState({ trip: [] });
-    }
+  async componentDidMount() {
+    const accessToken = localStorage.getItem('accessToken');
+    await this.setState({ accessToken });
+    const userId = localStorage.getItem('userId');
+    await this.setState({ userId });
+    this.getTripData();
   }
 
-  /*
-    componentDidUpdate () {
-        console.log('MIS A JOUR')
-        const {trip} = this.state;
-        localStorage.setItem('trip', JSON.stringify(trip))
+  getTripData = async () => {
+    try {
+      //'&user.id=' + this.state.userId
+      const response = await fetch(SERVER_URL + '/trips?access_token=' + this.state.accessToken, {
+        method: 'get',
+        headers: {
+          Accept: 'application/json',
+        },
+      });
+      const trip = await response.json();
+      const newTrips = trip.map((a) => ({
+        id: a.id,
+        location: a.name,
+        startDate: a.start_date,
+        endDate: a.end_date,
+      }));
+      this.setState({ trip: newTrips });
+    } catch (e) {
+      console.log(e);
+      this.setState({ networkError: true });
     }
-*/
-  saveData = () => {
-    console.log('MIS A JOUR');
-    const { trip } = this.state;
-    localStorage.setItem('trip', JSON.stringify(trip));
   };
 
-  // change state of the modal
-  toggle = (index) => {
-    const { modal } = this.state;
-    const { trip } = this.state;
+  getOneTrip = async (id) => {
+    try {
+      const response = await fetch(SERVER_URL + '/trips/' + id + '?access_token=' + this.state.accessToken, {
+        method: 'get',
+        headers: {
+          Accept: 'application/json',
+        },
+      });
+      const trip = await response.json();
+      const tripToEdit = {
+        id: trip.id,
+        location: trip.name,
+        startDate: trip.start_date,
+        endDate: trip.end_date,
+      };
+      this.setState({ tripToEdit: tripToEdit });
+    } catch (e) {
+      console.log(e);
+      this.setState({ networkError: true });
+    }
+  };
 
+  //   saveData = () => {
+  //     console.log('MIS A JOUR');
+  //     const { trip } = this.state;
+  //     localStorage.setItem('trip', JSON.stringify(trip));
+  //   };
+
+  // change state of the modal
+  openModalEdit = (id) => {
+    this.getOneTrip(id);
     this.setState({
-      modal: !modal,
-      tripToEdit: { ...trip[index] },
-      tripToEditIndex: index,
+      modal: true,
     });
+  };
+
+  closeModalEdit = () => {
+    this.setState({
+      modal: false,
+    });
+  };
+
+  logOut = () => {
+    this.setState({ logOut: true });
   };
 
   // change state of location
@@ -80,78 +122,140 @@ class App extends Component {
     To avoid this we put async (arguments) in the header of the function and await before the part we need to finish before going further */
   onFormSubmit = async (event) => {
     event.preventDefault();
-    const { tripToEdit, tripToEditIndex } = this.state;
-    await this.setState(
-      update(this.state, {
-        trip: {
-          [tripToEditIndex]: {
-            $set: tripToEdit,
-          },
+    const { tripToEdit } = this.state;
+    const name = tripToEdit.location;
+    const start_date = tripToEdit.startDate;
+    const end_date = tripToEdit.endDate;
+    const id = tripToEdit.id;
+    this.setState({ modal: false });
+    try {
+      await fetch(SERVER_URL + '/trips/' + id + '?access_token=' + this.state.accessToken, {
+        method: 'put',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
-        modal: {
-          $set: false,
-        },
-      })
-    );
-    this.saveData();
+        body: JSON.stringify({
+          name,
+          start_date,
+          end_date,
+        }),
+      });
+      this.getTripData();
+    } catch (e) {
+      console.log(e);
+    }
   };
 
-  // remove trip from the state based on its index
-  removeTrip = async (index) => {
-    const { trip } = this.state;
-
-    await this.setState({
-      trip: trip.filter((trip, i) => {
-        return i !== index;
-      }),
-    });
-    this.saveData();
+  // remove trip from the state based on its id
+  removeTrip = async (id) => {
+    try {
+      await fetch(SERVER_URL + '/trips/' + id + '?access_token=' + this.state.accessToken, {
+        method: 'delete',
+        headers: {
+          Accept: 'application/json',
+        },
+      });
+      this.getTripData();
+    } catch (e) {
+      console.log(e);
+    }
   };
 
+  // create trip
   handleSubmit = async (trip) => {
-    await this.setState({ trip: [...this.state.trip, trip] });
-    this.saveData();
+    const name = trip.location;
+    const start_date = trip.startDate;
+    const end_date = trip.endDate;
+    try {
+      await fetch(SERVER_URL + '/trips?access_token=' + this.state.accessToken, {
+        method: 'post',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          start_date,
+          end_date,
+        }),
+      });
+      this.getTripData();
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   render() {
+    if (this.state.logOut) {
+      return <Redirect to={`/`}></Redirect>;
+    }
     const { trip, modal, locationMap, tripToEdit } = this.state;
     return (
-      <MDBContainer>
-        <MDBRow>
-          <MDBCol middle size="2">
-            <figure class="figure">
-              <img
-                src="/icons/logo.png"
-                alt="Logo"
-                classname="figure-img img-fluid z-depth-1"
-                style={{ width: '150px' }}
+      <div className="bg">
+        <MDBContainer>
+          <div className="bg"></div>
+          <MDBRow>
+            <MDBCol middle size="2">
+              <figure class="figure">
+                <img
+                  src="/icons/logo.png"
+                  alt="Logo"
+                  classname="figure-img img-fluid z-depth-1"
+                  style={{ width: '150px' }}
+                />
+              </figure>
+            </MDBCol>
+
+            <MDBCol middle size="10">
+              <MDBRow>
+                <MDBCol middle size="10">
+                  <MDBTypography colorText="mdb-color" className="text-center" tag="h2">
+                    <strong>My Trip Planner</strong>
+                  </MDBTypography>
+                </MDBCol>
+                <MDBCol size="2">
+                  <MDBBtn rounded outline color="primary" tag="a" onClick={() => this.logOut()}>
+                    <MDBIcon icon="sign-out-alt" className="mr-1" /> Exit
+                  </MDBBtn>
+                </MDBCol>
+              </MDBRow>
+              <MDBRow>
+                <MDBCol left size="12">
+                  <Form locationMap={locationMap} handleSubmit={this.handleSubmit} />
+                </MDBCol>
+              </MDBRow>
+            </MDBCol>
+          </MDBRow>
+
+          <MDBRow>
+            <MDBCol size="7">
+              <MDBTypography colorText="mdb-color" className="text-center" tag="h2">
+                My Travel Map
+              </MDBTypography>
+
+              <Map trip={trip} addLocationMap={this.addLocationMap} />
+            </MDBCol>
+
+            <MDBCol size="0">
+              <Modal
+                modal={modal}
+                closeModalEdit={this.closeModalEdit}
+                tripToEdit={tripToEdit}
+                handleChange={this.handleChange}
+                onFormSubmit={this.onFormSubmit}
               />
-            </figure>
-          </MDBCol>
-          <MDBCol middle size="10">
-            <Form locationMap={locationMap} handleSubmit={this.handleSubmit} />
-          </MDBCol>
-        </MDBRow>
-        <MDBRow>
-          <MDBCol middle size="8">
-            <h2 class="title is-2 has-text-centered">My Travel Map</h2>
-            <Map trip={trip} addLocationMap={this.addLocationMap} />
-          </MDBCol>
-          <MDBCol middle size="0">
-            <Modal
-              modal={modal}
-              toggle={this.toggle}
-              tripToEdit={tripToEdit}
-              handleChange={this.handleChange}
-              onFormSubmit={this.onFormSubmit}
-            />
-          </MDBCol>
-          <MDBCol middle size="3">
-            <h2 class="title is-2 has-text-centered">My Planning</h2>
-            <Planning tripData={trip} removeTrip={this.removeTrip} toggle={this.toggle} />
-          </MDBCol>
-        </MDBRow>
-      </MDBContainer>
+            </MDBCol>
+
+            <MDBCol size="4">
+              <MDBTypography colorText="mdb-color" className="text-center" tag="h2">
+                My Planning
+              </MDBTypography>
+              <Planning tripData={trip} removeTrip={this.removeTrip} openModalEdit={this.openModalEdit} />
+            </MDBCol>
+          </MDBRow>
+        </MDBContainer>
+      </div>
     );
   }
 }

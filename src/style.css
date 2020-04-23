@@ -8,3 +8,10 @@
   padding: 2 px;
   background: none;
 }
+.bg {
+  background-image: url(/icons/background.jpg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  min-height: 100%;
+}

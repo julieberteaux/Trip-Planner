@@ -11,8 +11,9 @@ const PlanningHeader = () => {
         <th>Location</th>
         <th>Start</th>
         <th>End</th>
-        <th></th>
-        <th></th>
+        <th>Remove</th>
+        <th>Edit</th>
+        <th>Infos</th>
       </tr>
     </MDBTableHead>
   );
@@ -29,24 +30,29 @@ const PlanningBody = (props) => {
         <td>{row.startDate}</td>
         <td>{row.endDate}</td>
         <td>
-          <MDBBtn gradient="peach" tag="a" onClick={() => props.removeTrip(index)}>
+          <MDBBtn gradient="peach" tag="a" onClick={() => props.removeTrip(row.id)}>
             <MDBIcon icon="trash" />
           </MDBBtn>
         </td>
         <td>
-          <MDBBtn gradient="aqua" tag="a" onClick={() => props.toggle(index)}>
+          <MDBBtn gradient="aqua" tag="a" onClick={() => props.openModalEdit(row.id)}>
             <MDBIcon icon="pen" />
+          </MDBBtn>
+        </td>
+        <td>
+          <MDBBtn gradient="purple" tag="a" onClick={() => props.openModalEdit(row.id)}>
+            <MDBIcon icon="info" />
           </MDBBtn>
         </td>
       </tr>
     );
   });
 
-  return <MDBTableBody>{rows}</MDBTableBody>;
+  return <MDBTableBody color="rgba-white-strong">{rows}</MDBTableBody>;
 };
 
 const Planning = (props) => {
-  const { tripData, removeTrip, toggle } = props;
+  const { tripData, removeTrip, openModalEdit } = props;
 
   if (tripData === {}) {
     return <h2>You don't have any trip planned yet</h2>;
@@ -54,7 +60,7 @@ const Planning = (props) => {
     return (
       <MDBTable hover>
         <PlanningHeader />
-        <PlanningBody tripData={tripData} removeTrip={removeTrip} toggle={toggle} />
+        <PlanningBody tripData={tripData} removeTrip={removeTrip} openModalEdit={openModalEdit} />
       </MDBTable>
     );
   }
