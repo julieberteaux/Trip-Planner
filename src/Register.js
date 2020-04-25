@@ -14,6 +14,7 @@ class Register extends React.Component {
     displayErrorPassword2: false,
     registerValid: false,
     displayErrorAPI: false,
+    userId: '',
   };
 
   getClientData = (value, type) =>
@@ -37,6 +38,8 @@ class Register extends React.Component {
       const user = await response.json();
       if (user.token.length > 0) {
         localStorage.setItem('accessToken', user.token);
+        localStorage.setItem('userId', user.user.id);
+        this.setState({ userId: user.user.id });
         this.setState({ registerValid: true });
       } else {
         this.setState({ displayErrorAPI: true });
@@ -68,7 +71,7 @@ class Register extends React.Component {
 
   render() {
     if (this.state.registerValid) {
-      return <Redirect push to={`/user/${this.state.email}`}></Redirect>;
+      return <Redirect push to={`/`}></Redirect>;
     }
 
     return (

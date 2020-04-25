@@ -10,10 +10,25 @@ import {
   MDBCol,
   MDBInput,
 } from 'mdbreact';
+import { DateRangePicker } from 'react-dates';
+import 'react-dates/initialize';
+import 'react-dates/lib/css/_datepicker.css';
 
 class Modal extends Component {
+  constructor(props) {
+    super(props);
+
+    this.initialState = {
+      location: '',
+      startDate: null,
+      endDate: null,
+    };
+
+    this.state = this.initialState;
+  }
+
   render() {
-    const { tripToEdit, handleChange, modal, closeModalEdit, onFormSubmit } = this.props;
+    const { tripToEdit, handleChange, handleDateChange, modal, closeModalEdit, onFormSubmit } = this.props;
 
     return (
       <MDBContainer>
@@ -36,7 +51,18 @@ class Modal extends Component {
               </MDBRow>
               <MDBRow>
                 <MDBCol>
-                  <MDBInput
+                  <DateRangePicker
+                    startDate={tripToEdit.startDate} // momentPropTypes.momentObj or null,
+                    startDateId="startDate" // PropTypes.string.isRequired,
+                    required
+                    displayFormat="YYYY-MM-DD"
+                    endDate={tripToEdit.endDate} // momentPropTypes.momentObj or null,
+                    endDateId="endDate" // PropTypes.string.isRequired,
+                    onDatesChange={({ startDate, endDate }) => handleDateChange(startDate, endDate)} // PropTypes.func.isRequired,
+                    focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
+                    onFocusChange={(focusedInput) => this.setState({ focusedInput })} // PropTypes.func.isRequired,
+                  />
+                  {/* <MDBInput
                     icon="calendar-alt"
                     label="Start"
                     type="date"
@@ -57,7 +83,7 @@ class Modal extends Component {
                     id="endDate"
                     value={tripToEdit.endDate}
                     onChange={handleChange}
-                  />
+                  />*/}
                 </MDBCol>
               </MDBRow>
             </MDBModalBody>

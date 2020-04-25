@@ -12,6 +12,7 @@ class Login extends React.Component {
     newClient: false,
     displayError: false,
     displayErrorAPI: false,
+    userId: '',
   };
 
   logIn = async (email, password) => {
@@ -27,6 +28,7 @@ class Login extends React.Component {
       if (user.token.length > 0) {
         localStorage.setItem('accessToken', user.token);
         localStorage.setItem('userId', user.user.id);
+        this.setState({ userId: user.user.id });
         this.setState({ loginVerified: true });
       } else {
         this.setState({ displayErrorAPI: true });
@@ -55,7 +57,7 @@ class Login extends React.Component {
 
   render() {
     if (this.state.loginVerified) {
-      return <Redirect push to={`/user/${this.state.email}`}></Redirect>;
+      return <Redirect push to={`/`}></Redirect>;
     }
     if (this.state.newClient) {
       return <Redirect push to={`/register`}></Redirect>;

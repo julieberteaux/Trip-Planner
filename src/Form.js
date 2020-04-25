@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
-import { MDBRow, MDBCol, MDBInput, MDBBtn } from 'mdbreact';
+import { MDBRow, MDBCol, MDBInput, MDBBtn, MDBContainer } from 'mdbreact';
+import { DateRangePicker } from 'react-dates';
+import 'react-dates/initialize';
+import 'react-dates/lib/css/_datepicker.css';
+import moment from 'moment';
 
 class Form extends Component {
   constructor(props) {
@@ -7,8 +11,8 @@ class Form extends Component {
 
     this.initialState = {
       location: '',
-      startDate: '',
-      endDate: '',
+      startDate: null,
+      endDate: null,
     };
 
     this.state = this.initialState;
@@ -24,7 +28,6 @@ class Form extends Component {
 
   onFormSubmit = (event) => {
     event.preventDefault();
-
     this.props.handleSubmit(this.state);
     this.setState(this.initialState);
   };
@@ -43,19 +46,45 @@ class Form extends Component {
 
     return (
       <form onSubmit={this.onFormSubmit}>
-        <MDBRow>
-          <MDBCol md="4">
-            <MDBInput
-              icon="globe-americas"
-              label="Choose your next destination"
-              type="text"
-              name="location"
-              id="location"
-              value={location}
-              onChange={this.handleChange}
-            />
-          </MDBCol>
-          <MDBCol md="3">
+        <MDBContainer fluid>
+          <MDBRow>
+            <MDBCol middle>
+              <MDBInput
+                background
+                icon="globe-americas"
+                label="Choose your next destination"
+                type="text"
+                name="location"
+                id="location"
+                required
+                value={location}
+                onChange={this.handleChange}
+              />
+            </MDBCol>
+            <MDBCol align="center" middle>
+              <DateRangePicker
+                startDate={startDate} // momentPropTypes.momentObj or null,
+                required
+                styles={{ zIndex: 10 }}
+                displayFormat="YYYY-MM-DD"
+                startDateId="startDate" // PropTypes.string.isRequired,
+                endDate={endDate} // momentPropTypes.momentObj or null,
+                endDateId="endDate" // PropTypes.string.isRequired,
+                onDatesChange={({ startDate, endDate }) => this.setState({ startDate, endDate })} // PropTypes.func.isRequired,
+                focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
+                onFocusChange={(focusedInput) => this.setState({ focusedInput })} // PropTypes.func.isRequired,
+              />
+            </MDBCol>
+            <MDBCol size="2" align="center" middle>
+              <MDBBtn gradient="blue" type="submit">
+                Add
+              </MDBBtn>
+            </MDBCol>
+          </MDBRow>
+        </MDBContainer>
+      </form>
+
+      /* <MDBCol md="3">
             <MDBInput
               icon="calendar-alt"
               label="beginning of your trip"
@@ -76,14 +105,7 @@ class Form extends Component {
               value={endDate}
               onChange={this.handleChange}
             />
-          </MDBCol>
-          <MDBCol middle left md="2">
-            <MDBBtn gradient="blue" type="submit">
-              Add
-            </MDBBtn>
-          </MDBCol>
-        </MDBRow>
-      </form>
+          </MDBCol> */
     );
   }
 }

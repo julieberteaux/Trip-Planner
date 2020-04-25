@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import leaflet from 'leaflet';
 import 'leaflet-control-geocoder';
+import moment from 'moment';
 
 class Map extends Component {
   addTripMarker = () => {
@@ -16,22 +17,25 @@ class Map extends Component {
       });
 
       geocoder.geocode(city.location, (results) => {
-        var latLng = new leaflet.LatLng(results[0].center.lat, results[0].center.lng);
+        console.log(results);
+        if (results[0]) {
+          var latLng = new leaflet.LatLng(results[0].center.lat, results[0].center.lng);
 
-        var marker = leaflet
-          .marker(latLng, { icon: markerPlaneIcon })
-          .addTo(this.mymap)
-          .bindPopup(
-            'Destination: <strong>' +
-              city.location +
-              '</strong><br/>Start: <strong>' +
-              city.startDate +
-              '</strong><br/>End:<strong>' +
-              city.endDate +
-              '</strong>'
-          );
+          var marker = leaflet
+            .marker(latLng, { icon: markerPlaneIcon })
+            .addTo(this.mymap)
+            .bindPopup(
+              'Destination: <strong>' +
+                city.location +
+                '</strong><br/>Start: <strong>' +
+                moment(city.startDate).format('YYYY-MM-DD') +
+                '</strong><br/>End:<strong>' +
+                moment(city.endDate).format('YYYY-MM-DD') +
+                '</strong>'
+            );
 
-        this.mapMarkers.push(marker);
+          this.mapMarkers.push(marker);
+        }
       });
     });
   };
@@ -81,10 +85,6 @@ class Map extends Component {
 
     this.popup = leaflet.popup();
     this.mymap.on('click', this.onMapClickAddTrip);
-
-    // this.addTrip();
-
-    //leaflet.marker([-8.6478, 115.1385], {icon: markerPlaneIcon }).addTo(this.mymap).bindPopup("Test");
   }
 
   componentDidUpdate(prevProps) {

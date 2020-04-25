@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { MDBBtn, MDBTable, MDBTableBody, MDBTableHead, MDBIcon } from 'mdbreact';
+import moment from 'moment';
 
 // Define table header
 const PlanningHeader = () => {
@@ -13,7 +14,7 @@ const PlanningHeader = () => {
         <th>End</th>
         <th>Remove</th>
         <th>Edit</th>
-        <th>Infos</th>
+        {/* <th>Infos</th> */}
       </tr>
     </MDBTableHead>
   );
@@ -27,8 +28,8 @@ const PlanningBody = (props) => {
     return (
       <tr key={index}>
         <td>{row.location}</td>
-        <td>{row.startDate}</td>
-        <td>{row.endDate}</td>
+        <td>{moment(row.startDate).format('YYYY-MM-DD')}</td>
+        <td>{moment(row.endDate).format('YYYY-MM-DD')}</td>
         <td>
           <MDBBtn gradient="peach" tag="a" onClick={() => props.removeTrip(row.id)}>
             <MDBIcon icon="trash" />
@@ -39,11 +40,11 @@ const PlanningBody = (props) => {
             <MDBIcon icon="pen" />
           </MDBBtn>
         </td>
-        <td>
-          <MDBBtn gradient="purple" tag="a" onClick={() => props.openModalEdit(row.id)}>
+        {/* <td>
+          <MDBBtn gradient="purple" tag="a" onClick={() => props.getInfo(row.id)}>
             <MDBIcon icon="info" />
           </MDBBtn>
-        </td>
+        </td> */}
       </tr>
     );
   });
@@ -52,7 +53,7 @@ const PlanningBody = (props) => {
 };
 
 const Planning = (props) => {
-  const { tripData, removeTrip, openModalEdit } = props;
+  const { tripData, removeTrip, openModalEdit, getInfo } = props;
 
   if (tripData === {}) {
     return <h2>You don't have any trip planned yet</h2>;
@@ -60,7 +61,7 @@ const Planning = (props) => {
     return (
       <MDBTable hover>
         <PlanningHeader />
-        <PlanningBody tripData={tripData} removeTrip={removeTrip} openModalEdit={openModalEdit} />
+        <PlanningBody tripData={tripData} removeTrip={removeTrip} openModalEdit={openModalEdit} getInfo={getInfo} />
       </MDBTable>
     );
   }
