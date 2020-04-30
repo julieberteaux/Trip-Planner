@@ -2,8 +2,13 @@ import React, { Component } from 'react';
 import leaflet from 'leaflet';
 import 'leaflet-control-geocoder';
 import moment from 'moment';
+import { MDBContainer, MDBRow, MDBAlert } from 'mdbreact';
 
 class Map extends Component {
+  state = {
+    erreurGeocode: false,
+  };
+
   addTripMarker = () => {
     const listTrip = this.props.trip;
     const geocoder = leaflet.Control.Geocoder.nominatim();
@@ -35,6 +40,8 @@ class Map extends Component {
             );
 
           this.mapMarkers.push(marker);
+        } else {
+          this.setState({ erreurGeocode: true });
         }
       });
     });
@@ -95,7 +102,19 @@ class Map extends Component {
   }
 
   render() {
-    return <div id="mapid"></div>;
+    return (
+      <MDBContainer>
+        <MDBRow>
+          {this.state.erreurGeocode && (
+            <MDBAlert dismiss color="warning">
+              The location of your trip wasn't found on the map. You can try to edit it with a more detailed location.
+            </MDBAlert>
+          )}
+        </MDBRow>
+
+        <div id="mapid"></div>
+      </MDBContainer>
+    );
   }
 }
 

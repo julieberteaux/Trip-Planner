@@ -6,29 +6,35 @@ import 'react-dates/lib/css/_datepicker.css';
 
 class FormInfo extends Component {
   state = {};
+
+  falseFunc = () => false;
+
   render() {
     const { tripToEdit, handleChange, handleDateChange, onFormSubmit } = this.props;
 
     return (
-      <MDBContainer>
+      <MDBContainer fluid>
         <form onSubmit={onFormSubmit}>
           <MDBRow>
-            <MDBCol>
+            <MDBCol middle>
               <MDBInput
+                background
                 icon="globe-americas"
                 label="Destination"
                 type="text"
                 name="location"
                 id="location"
+                required
                 value={tripToEdit.location}
                 onChange={handleChange}
               />
             </MDBCol>
-            <MDBCol>
+            <MDBCol middle>
               <DateRangePicker
                 startDate={tripToEdit.startDate} // momentPropTypes.momentObj or null,
                 startDateId="startDate" // PropTypes.string.isRequired,
                 required
+                isOutsideRange={this.falseFunc}
                 displayFormat="YYYY-MM-DD"
                 endDate={tripToEdit.endDate} // momentPropTypes.momentObj or null,
                 endDateId="endDate" // PropTypes.string.isRequired,
@@ -37,10 +43,12 @@ class FormInfo extends Component {
                 onFocusChange={(focusedInput) => this.setState({ focusedInput })} // PropTypes.func.isRequired,
               />
             </MDBCol>
+            <MDBCol middle>
+              <MDBBtn type="submit" gradient="aqua">
+                Save changes
+              </MDBBtn>
+            </MDBCol>
           </MDBRow>
-          <MDBBtn type="submit" gradient="aqua">
-            Save changes
-          </MDBBtn>
         </form>
       </MDBContainer>
     );

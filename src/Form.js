@@ -18,6 +18,8 @@ class Form extends Component {
     this.state = this.initialState;
   }
 
+  falseFunc = () => false;
+
   handleChange = (event) => {
     const { name, value } = event.target;
 
@@ -45,10 +47,10 @@ class Form extends Component {
     const { location, startDate, endDate } = this.state;
 
     return (
-      <form onSubmit={this.onFormSubmit}>
-        <MDBContainer fluid>
-          <MDBRow>
-            <MDBCol middle>
+      <MDBContainer fluid>
+        <form onSubmit={this.onFormSubmit}>
+          <MDBRow center>
+            <MDBCol size="6" middle>
               <MDBInput
                 background
                 icon="globe-americas"
@@ -61,12 +63,12 @@ class Form extends Component {
                 onChange={this.handleChange}
               />
             </MDBCol>
-            <MDBCol align="center" middle>
+            <MDBCol size="4" middle>
               <DateRangePicker
                 startDate={startDate} // momentPropTypes.momentObj or null,
                 required
-                styles={{ zIndex: 10 }}
                 displayFormat="YYYY-MM-DD"
+                isOutsideRange={this.falseFunc}
                 startDateId="startDate" // PropTypes.string.isRequired,
                 endDate={endDate} // momentPropTypes.momentObj or null,
                 endDateId="endDate" // PropTypes.string.isRequired,
@@ -75,14 +77,16 @@ class Form extends Component {
                 onFocusChange={(focusedInput) => this.setState({ focusedInput })} // PropTypes.func.isRequired,
               />
             </MDBCol>
-            <MDBCol size="2" align="center" middle>
-              <MDBBtn gradient="blue" type="submit">
-                Add
-              </MDBBtn>
+            <MDBCol size="2" middle>
+              <div class="float-center">
+                <MDBBtn gradient="blue" type="submit">
+                  Add
+                </MDBBtn>
+              </div>
             </MDBCol>
           </MDBRow>
-        </MDBContainer>
-      </form>
+        </form>
+      </MDBContainer>
 
       /* <MDBCol md="3">
             <MDBInput

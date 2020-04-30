@@ -16,7 +16,51 @@
   min-height: 100%;
 }
 
+.entete {
+  background-color: rgba(255, 255, 255, 0.3);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  min-height: 100%;
+}
+
+.centerBlock {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .logo {
   height: 10px;
   width: 10px;
+}
+
+blockquote {
+  border-left: 2px solid #ddd;
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 10px;
+  color: #aaa;
+  font-style: italic;
+}
+
+blockquote[dir='rtl'] {
+  border-left: none;
+  padding-left: 0;
+  padding-right: 10px;
+  border-right: 2px solid #ddd;
+}
+
+pre {
+  padding: 10px;
+  background-color: #eee;
+  white-space: pre-wrap;
+  color: rgb(5, 5, 5);
+}
+
+:not(pre) > code {
+  font-family: monospace;
+  background-color: #eee;
+  padding: 3px;
+  color: rgb(5, 5, 5);
 }

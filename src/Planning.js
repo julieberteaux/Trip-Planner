@@ -14,7 +14,7 @@ const PlanningHeader = () => {
         <th>End</th>
         <th>Remove</th>
         <th>Edit</th>
-        {/* <th>Infos</th> */}
+        <th>Infos</th>
       </tr>
     </MDBTableHead>
   );
@@ -40,11 +40,11 @@ const PlanningBody = (props) => {
             <MDBIcon icon="pen" />
           </MDBBtn>
         </td>
-        {/* <td>
+        <td>
           <MDBBtn gradient="purple" tag="a" onClick={() => props.getInfo(row.id)}>
             <MDBIcon icon="info" />
           </MDBBtn>
-        </td> */}
+        </td>
       </tr>
     );
   });

@@ -64,6 +64,8 @@ class App extends Component {
       const newTrips = trip.map((a) => ({
         id: a.id,
         location: a.name,
+        notes: a.notes,
+        images: a.images,
         startDate: moment(a.start_date),
         endDate: moment(a.end_date),
       }));
@@ -88,6 +90,8 @@ class App extends Component {
         location: trip.name,
         startDate: moment(trip.start_date),
         endDate: moment(trip.end_date),
+        notes: trip.notes,
+        images: trip.images,
       };
       this.setState({ tripToEdit: tripToEdit });
     } catch (e) {
@@ -272,25 +276,23 @@ class App extends Component {
                 />
               </figure>
             </MDBCol>
+            <MDBCol middle size="8">
+              <MDBRow center>
+                <MDBTypography colorText="mdb-color" className="text-center" tag="h2">
+                  <strong>My Trip Planner</strong>
+                </MDBTypography>
+              </MDBRow>
+              <MDBRow middle>
+                <Form locationMap={locationMap} handleSubmit={this.handleSubmit} />
+              </MDBRow>
+            </MDBCol>
 
-            <MDBCol middle size="10">
-              <MDBRow>
-                <MDBCol middle size="10">
-                  <MDBTypography colorText="mdb-color" className="text-center" tag="h2">
-                    <strong>My Trip Planner</strong>
-                  </MDBTypography>
-                </MDBCol>
-                <MDBCol size="2">
-                  <MDBBtn rounded outline color="primary" tag="a" onClick={() => this.logOut()}>
-                    <MDBIcon icon="sign-out-alt" className="mr-1" /> Exit
-                  </MDBBtn>
-                </MDBCol>
-              </MDBRow>
-              <MDBRow>
-                <MDBCol left size="12">
-                  <Form locationMap={locationMap} handleSubmit={this.handleSubmit} />
-                </MDBCol>
-              </MDBRow>
+            <MDBCol middle size="2">
+              <div class="float-center">
+                <MDBBtn rounded outline color="primary" tag="a" onClick={() => this.logOut()}>
+                  <MDBIcon icon="sign-out-alt" className="mr-1" /> Exit
+                </MDBBtn>
+              </div>
             </MDBCol>
           </MDBRow>
 
