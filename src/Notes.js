@@ -6,6 +6,7 @@ import { Slate, Editable, useSlate, withReact } from 'slate-react';
 import { withHistory } from 'slate-history';
 import { MDBIcon, MDBContainer, MDBCardBody, MDBCard } from 'mdbreact';
 import { Toolbar } from './NotesComponents';
+import './scrollbar.css';
 
 const Notes = (props) => {
   const HOTKEYS = {
@@ -279,10 +280,11 @@ const Notes = (props) => {
   const renderElement = useCallback((props) => <Element {...props} />, []);
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
   const editor = useMemo(() => withLinks(withHistory(withReact(createEditor()))), []);
+  const scrollContainerStyle = { maxWidth: '750px', maxHeight: '600px' };
 
   return (
-    <MDBContainer fluid>
-      <MDBCard>
+    <MDBContainer fluid style={{ paddingLeft: '0px', paddingRight: '0px' }}>
+      <MDBCard style={{ minHeight: '90vh' }}>
         <MDBCardBody color="rgba-white-strong">
           <Slate
             editor={editor}
@@ -305,22 +307,26 @@ const Notes = (props) => {
               <BlockButton format="numbered-list" icon="list-ol" />
               <BlockButton format="bulleted-list" icon="list-ul" />
             </Toolbar>
-            <Editable
-              renderElement={renderElement}
-              renderLeaf={renderLeaf}
-              placeholder="Enter some rich text…"
-              spellCheck
-              autoFocus
-              onKeyDown={(event) => {
-                for (const hotkey in HOTKEYS) {
-                  if (isHotkey(hotkey, event)) {
-                    event.preventDefault();
-                    const mark = HOTKEYS[hotkey];
-                    toggleMark(editor, mark);
-                  }
-                }
-              }}
-            />
+            <div className="scrollbar mt-3 mx-auto thin" style={scrollContainerStyle}>
+              <div className="mdb-lightbox no-margin">
+                <Editable
+                  renderElement={renderElement}
+                  renderLeaf={renderLeaf}
+                  placeholder="Enter some rich text…"
+                  spellCheck
+                  autoFocus
+                  onKeyDown={(event) => {
+                    for (const hotkey in HOTKEYS) {
+                      if (isHotkey(hotkey, event)) {
+                        event.preventDefault();
+                        const mark = HOTKEYS[hotkey];
+                        toggleMark(editor, mark);
+                      }
+                    }
+                  }}
+                />
+              </div>
+            </div>
           </Slate>
         </MDBCardBody>
       </MDBCard>

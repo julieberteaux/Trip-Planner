@@ -14,7 +14,7 @@ import { DateRangePicker } from 'react-dates';
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 
-class Modal extends Component {
+class ModalCreate extends Component {
   constructor(props) {
     super(props);
 
@@ -27,38 +27,67 @@ class Modal extends Component {
     this.state = this.initialState;
   }
 
+  falseFunc = () => false;
+
+  handleChange = (event) => {
+    const { name, value } = event.target;
+
+    this.setState({
+      [name]: value,
+    });
+  };
+
+  onFormSubmit = (event) => {
+    event.preventDefault();
+    this.props.handleSubmit(this.state);
+    this.setState(this.initialState);
+  };
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.locationMap !== this.props.locationMap) {
+      const { locationMap } = this.props;
+      this.setState({
+        location: locationMap,
+      });
+    }
+  }
+
   render() {
-    const { tripToEdit, handleChange, handleDateChange, modal, closeModalEdit, onFormSubmit } = this.props;
+    const { modalCreate, closeModalCreate } = this.props;
+    const { location, startDate, endDate } = this.state;
 
     return (
       <MDBContainer>
-        <MDBModal isOpen={modal} toogle={closeModalEdit} centered>
-          <MDBModalHeader toggle={closeModalEdit}>Edit your trip</MDBModalHeader>
-          <form onSubmit={onFormSubmit}>
+        <MDBModal isOpen={modalCreate} toogle={closeModalCreate} centered>
+          <MDBModalHeader toggle={closeModalCreate}>Add a new trip</MDBModalHeader>
+          <form onSubmit={this.onFormSubmit}>
             <MDBModalBody>
               <MDBRow>
                 <MDBCol>
                   <MDBInput
+                    background
                     icon="globe-americas"
-                    label="Destination"
+                    label="Choose your next destination"
                     type="text"
                     name="location"
                     id="location"
-                    value={tripToEdit.location}
-                    onChange={handleChange}
+                    required
+                    value={location}
+                    onChange={this.handleChange}
                   />
                 </MDBCol>
               </MDBRow>
               <MDBRow>
                 <MDBCol>
                   <DateRangePicker
-                    startDate={tripToEdit.startDate} // momentPropTypes.momentObj or null,
-                    startDateId="startDate" // PropTypes.string.isRequired,
+                    startDate={startDate} // momentPropTypes.momentObj or null,
                     required
                     displayFormat="YYYY-MM-DD"
-                    endDate={tripToEdit.endDate} // momentPropTypes.momentObj or null,
+                    isOutsideRange={this.falseFunc}
+                    startDateId="startDate" // PropTypes.string.isRequired,
+                    endDate={endDate} // momentPropTypes.momentObj or null,
                     endDateId="endDate" // PropTypes.string.isRequired,
-                    onDatesChange={({ startDate, endDate }) => handleDateChange(startDate, endDate)} // PropTypes.func.isRequired,
+                    onDatesChange={({ startDate, endDate }) => this.setState({ startDate, endDate })} // PropTypes.func.isRequired,
                     focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
                     onFocusChange={(focusedInput) => this.setState({ focusedInput })} // PropTypes.func.isRequired,
                   />
@@ -66,11 +95,11 @@ class Modal extends Component {
               </MDBRow>
             </MDBModalBody>
             <MDBModalFooter>
-              <MDBBtn gradient="peach" onClick={closeModalEdit}>
-                Close
+              <MDBBtn gradient="peach" onClick={closeModalCreate}>
+                Cancel
               </MDBBtn>
               <MDBBtn type="submit" gradient="aqua">
-                Save changes
+                Add Trip
               </MDBBtn>
             </MDBModalFooter>
           </form>
@@ -80,4 +109,4 @@ class Modal extends Component {
   }
 }
 
-export default Modal;
+export default ModalCreate;

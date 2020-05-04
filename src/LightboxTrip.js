@@ -1,0 +1,117 @@
+import React from 'react';
+import { MDBContainer, MDBRow, MDBCol, MDBMask, MDBView, MDBIcon } from 'mdbreact';
+import Lightbox from 'react-image-lightbox';
+import moment from 'moment';
+import './lightbox.css';
+import './scrollbar.css';
+
+class LightboxTrip extends React.Component {
+  state = {
+    tripIndex: 0,
+    isOpen: false,
+    trips: [],
+    default: ['https://res.cloudinary.com/julieb/image/upload/v1588602107/Trip-Planner/dlirycrxa0rardrclvsp.jpg'],
+  };
+
+  componentDidMount() {
+    const trips = this.props.tripData;
+    this.setState({ trips: trips });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.newTrip !== this.props.newTrip) {
+      const trips = this.props.tripData;
+      this.setState({ trips: trips });
+    }
+  }
+
+  renderImages = () => {
+    let tripIndex = -1;
+    const { trips } = this.state;
+    if (this.props.newTrip) {
+      this.props.addTripStateFalse();
+    }
+
+    return trips.map((tripSrc) => {
+      tripIndex++;
+      const privateKey = tripIndex;
+      let image = this.state.default[0];
+
+      if (tripSrc.images[0] !== undefined) {
+        image = tripSrc.images[0];
+      }
+      return (
+        <MDBCol md="4" key={tripIndex} style={{ paddingLeft: '3px', paddingRight: '3px' }}>
+          <figure>
+            <MDBView hover>
+              <img
+                src={image}
+                alt="Gallery"
+                className="img-fluid"
+                onClick={() => this.setState({ tripIndex: privateKey, isOpen: true })}
+              />
+
+              <MDBMask className="flex-center" overlay="stylish-strong">
+                <MDBContainer fluid>
+                  <p className="tripCity">{tripSrc.location}</p>
+                  <p className="tripDate">
+                    {moment(tripSrc.startDate).format('YYYY-MM-DD')} / {moment(tripSrc.endDate).format('YYYY-MM-DD')}
+                  </p>
+                  <MDBRow around style={{ paddingTop: '35px', paddingLeft: '4px', paddingRight: '4px' }}>
+                    <button onClick={() => this.props.openModalEdit(tripSrc.id)} className="unstyled-button">
+                      <MDBIcon icon="pen" size="lg" className="white-text" />
+                    </button>
+
+                    <button onClick={() => this.props.getInfo(tripSrc.id)} className="unstyled-button">
+                      <MDBIcon icon="info" size="lg" className="white-text" />
+                    </button>
+
+                    <button onClick={() => this.props.removeTrip(tripSrc.id)} className="unstyled-button">
+                      <MDBIcon icon="trash" size="lg" className="white-text" />
+                    </button>
+                  </MDBRow>
+                </MDBContainer>
+              </MDBMask>
+            </MDBView>
+          </figure>
+        </MDBCol>
+      );
+    });
+  };
+
+  render() {
+    const { tripIndex, isOpen, trips } = this.state;
+    const scrollContainerStyle = { maxWidth: '750px', maxHeight: '600px' };
+    return (
+      <MDBContainer fluid>
+        <div className="scrollbar scrollbar-deep-blue mt-3 mx-auto thin" style={scrollContainerStyle}>
+          <div className="mdb-lightbox no-margin">
+            <MDBRow>{this.renderImages()}</MDBRow>
+          </div>
+        </div>
+        {isOpen && (
+          <Lightbox
+            color="rgba-white-strong"
+            mainSrc={trips[tripIndex]}
+            nextSrc={trips[(tripIndex + 1) % trips.length]}
+            prevSrc={trips[(tripIndex + trips.length - 1) % trips.length]}
+            imageTitle={tripIndex + 1 + '/' + trips.length}
+            onCloseRequest={() => this.setState({ isOpen: false })}
+            onMovePrevRequest={() =>
+              this.setState({
+                tripIndex: (tripIndex + trips.length - 1) % trips.length,
+              })
+            }
+            onMoveNextRequest={() =>
+              this.setState({
+                tripIndex: (tripIndex + 1) % trips.length,
+              })
+            }
+          />
+        )}
+      </MDBContainer>
+    );
+  }
+}
+
+export default LightboxTrip;

@@ -3,6 +3,7 @@ import Planning from './Planning';
 import Form from './Form';
 import Modal from './Modal';
 import Map from './Map';
+import LightboxTrip from './LightboxTrip';
 import moment from 'moment';
 import {
   MDBContainer,
@@ -22,13 +23,14 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'leaflet/dist/leaflet.css';
 import './style.css';
 import 'react-dates/lib/css/_datepicker.css';
+import ModalCreate from './ModalCreate';
 
 const SERVER_URL = 'https://julie-trip-planner.herokuapp.com';
 
 class App extends Component {
   state = {
-    trip: [],
     modal: false,
+    modalCreate: false,
     tripToEdit: {},
     locationMap: '',
     accessToken: '',
@@ -36,6 +38,7 @@ class App extends Component {
     logOut: false,
     infoPage: false,
     infoId: '',
+    newTrip: false,
   };
 
   async componentDidMount() {
@@ -108,9 +111,21 @@ class App extends Component {
     });
   };
 
+  openModalCreate = () => {
+    this.setState({
+      modalCreate: true,
+    });
+  };
+
   closeModalEdit = () => {
     this.setState({
       modal: false,
+    });
+  };
+
+  closeModalCreate = () => {
+    this.setState({
+      modalCreate: false,
     });
   };
 
@@ -159,9 +174,11 @@ class App extends Component {
   onFormSubmit = async (event) => {
     event.preventDefault();
     const { tripToEdit } = this.state;
+    const notes = tripToEdit.notes;
     const name = tripToEdit.location;
     const start_date = tripToEdit.startDate;
     const end_date = tripToEdit.endDate;
+    const images = tripToEdit.images;
     const id = tripToEdit.id;
     this.setState({ modal: false });
     try {
@@ -175,9 +192,12 @@ class App extends Component {
           name,
           start_date,
           end_date,
+          notes,
+          images,
         }),
       });
-      this.getTripData();
+      await this.getTripData();
+      this.addTripStateTrue();
     } catch (e) {
       console.log(e);
     }
@@ -192,7 +212,8 @@ class App extends Component {
           Accept: 'application/json',
         },
       });
-      this.getTripData();
+      await this.getTripData();
+      this.addTripStateTrue();
     } catch (e) {
       console.log(e);
     }
@@ -203,6 +224,7 @@ class App extends Component {
     const name = trip.location;
     const start_date = trip.startDate;
     const end_date = trip.endDate;
+    this.setState({ modalCreate: false });
     try {
       await fetch(SERVER_URL + '/trips?access_token=' + this.state.accessToken, {
         method: 'post',
@@ -216,10 +238,20 @@ class App extends Component {
           end_date,
         }),
       });
-      this.getTripData();
+      await this.getTripData();
+      this.addTripStateTrue();
     } catch (e) {
       console.log(e);
     }
+  };
+
+  addTripStateTrue = () => {
+    this.setState({ newTrip: true });
+    console.log('trip true');
+  };
+
+  addTripStateFalse = () => {
+    this.setState({ newTrip: false });
   };
 
   render() {
@@ -229,107 +261,75 @@ class App extends Component {
     if (this.state.infoPage) {
       return <Redirect push to={`/info`}></Redirect>;
     }
-    const { trip, modal, locationMap, tripToEdit } = this.state;
-    const bgPink = { backgroundColor: '#e0f7fa' };
+    const { trip, modal, modalCreate, locationMap, tripToEdit, newTrip } = this.state;
+    const bgEntete = { backgroundColor: '#F5F5F5' };
     return (
-      //   <div>
-      //     <header>
-      //       <MDBNavbar style={bgPink} dark expand="md" scrolling fixed="top">
-      //         <MDBCollapse isOpen={true} navbar>
-      //           <MDBNavbarNav left>
-      //             <img src="/icons/favicon-96x96.png" alt="Logo" classname="img-fluid" />
-      //           </MDBNavbarNav>
-      //           <Form locationMap={locationMap} handleSubmit={this.handleSubmit} />
-      //           <MDBNavbarNav right>
-      //             <MDBTooltip placement="bottom">
-      //               <MDBBtn gradient="peach" tag="a" onClick={() => this.logOut()}>
-      //                 <MDBIcon icon="sign-out-alt" />
-      //               </MDBBtn>
-      //               Log Out
-      //             </MDBTooltip>
-      //           </MDBNavbarNav>
-      //         </MDBCollapse>
-      //       </MDBNavbar>
-      //     </header>
-      //     <MDBContainer fluid>
-      //       <MDBRow >
-      //         <MDBCol size="4">
-      //           <Planning tripData={trip} removeTrip={this.removeTrip} openModalEdit={this.openModalEdit} />
-      //         </MDBCol>
-      //         <MDBCol size="8">
-      //           <Map trip={trip} addLocationMap={this.addLocationMap} />
-      //         </MDBCol>
-      //       </MDBRow>
-      //     </MDBContainer>
-      //   </div>
-
-      <div className="bg">
-        <MDBContainer fluid>
-          <MDBRow>
-            <MDBCol middle size="2">
-              <figure class="figure">
+      <MDBContainer fluid>
+        <MDBRow>
+          <MDBNavbar style={bgEntete} expand="xs" scrolling fixed="top">
+            <MDBCollapse isOpen={true} navbar>
+              <MDBNavbarNav left>
                 <img
                   src="/icons/logo.png"
                   alt="Logo"
                   classname="figure-img img-fluid z-depth-1"
-                  style={{ width: '150px' }}
+                  style={{ width: '60px' }}
                 />
-              </figure>
-            </MDBCol>
-            <MDBCol middle size="8">
-              <MDBRow center>
-                <MDBTypography colorText="mdb-color" className="text-center" tag="h2">
-                  <strong>My Trip Planner</strong>
-                </MDBTypography>
-              </MDBRow>
-              <MDBRow middle>
-                <Form locationMap={locationMap} handleSubmit={this.handleSubmit} />
-              </MDBRow>
-            </MDBCol>
+              </MDBNavbarNav>
+              <p className="title">My Trip Planner</p>
+              <MDBNavbarNav right>
+                <button onClick={this.logOut} className="unstyled-button">
+                  <MDBIcon icon="sign-out-alt" size="lg" />
+                </button>
+              </MDBNavbarNav>
+            </MDBCollapse>
+          </MDBNavbar>
+        </MDBRow>
 
-            <MDBCol middle size="2">
-              <div class="float-center">
-                <MDBBtn rounded outline color="primary" tag="a" onClick={() => this.logOut()}>
-                  <MDBIcon icon="sign-out-alt" className="mr-1" /> Exit
-                </MDBBtn>
-              </div>
-            </MDBCol>
-          </MDBRow>
+        <Modal
+          modal={modal}
+          closeModalEdit={this.closeModalEdit}
+          tripToEdit={tripToEdit}
+          handleChange={this.handleChange}
+          handleDateChange={this.handleDateChange}
+          onFormSubmit={this.onFormSubmit}
+        />
 
-          <MDBRow>
-            <MDBCol size="6">
-              <MDBTypography colorText="mdb-color" className="text-center" tag="h2">
-                My Travel Map
-              </MDBTypography>
+        <ModalCreate
+          modalCreate={modalCreate}
+          closeModalCreate={this.closeModalCreate}
+          locationMap={locationMap}
+          handleSubmit={this.handleSubmit}
+        />
 
-              <Map trip={trip} addLocationMap={this.addLocationMap} />
-            </MDBCol>
+        <MDBRow style={{ paddingTop: '85px' }}>
+          <MDBCol size="6" style={{ paddingLeft: '0px', paddingRight: '0px' }}>
+            <Map trip={trip} addLocationMap={this.addLocationMap} />
+          </MDBCol>
 
-            <MDBCol size="0">
-              <Modal
-                modal={modal}
-                closeModalEdit={this.closeModalEdit}
-                tripToEdit={tripToEdit}
-                handleChange={this.handleChange}
-                handleDateChange={this.handleDateChange}
-                onFormSubmit={this.onFormSubmit}
-              />
-            </MDBCol>
-
-            <MDBCol size="5">
-              <MDBTypography colorText="mdb-color" className="text-center" tag="h2">
-                My Planning
-              </MDBTypography>
-              <Planning
+          <MDBCol size="6" style={{ paddingTop: '10px' }}>
+            <button onClick={this.openModalCreate} className="round-btn">
+              <MDBIcon icon="plus" size="lg" />
+            </button>
+            {trip ? (
+              <LightboxTrip
                 tripData={trip}
+                newTrip={newTrip}
+                addTripStateFalse={this.addTripStateFalse}
                 removeTrip={this.removeTrip}
                 openModalEdit={this.openModalEdit}
                 getInfo={this.getInfo}
               />
-            </MDBCol>
-          </MDBRow>
-        </MDBContainer>
-      </div>
+            ) : null}
+            {/* <Planning
+              tripData={trip}
+              removeTrip={this.removeTrip}
+              openModalEdit={this.openModalEdit}
+              getInfo={this.getInfo}
+            /> */}
+          </MDBCol>
+        </MDBRow>
+      </MDBContainer>
     );
   }
 }

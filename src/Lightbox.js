@@ -1,5 +1,5 @@
 import React from 'react';
-import { MDBContainer, MDBRow, MDBCol, MDBCard, MDBCardBody } from 'mdbreact';
+import { MDBContainer, MDBRow, MDBCol } from 'mdbreact';
 import Lightbox from 'react-image-lightbox';
 import './lightbox.css';
 import './scrollbar.css';
@@ -34,7 +34,7 @@ class LightboxPage extends React.Component {
       photoIndex++;
       const privateKey = photoIndex;
       return (
-        <MDBCol md="4" key={photoIndex}>
+        <MDBCol md="4" key={photoIndex} style={{ paddingLeft: '3px', paddingRight: '3px' }}>
           <figure>
             <img
               src={imageSrc}
@@ -54,7 +54,7 @@ class LightboxPage extends React.Component {
     const scrollContainerStyle = { maxWidth: '750px', maxHeight: '600px' };
     return (
       <MDBContainer fluid>
-        <div className="scrollbar scrollbar-deep-blue mt-3 mx-auto thin" style={scrollContainerStyle}>
+        <div className="scrollbar mt-3 mx-auto thin" style={scrollContainerStyle}>
           <div className="mdb-lightbox no-margin">
             <MDBRow>{this.renderImages()}</MDBRow>
           </div>
