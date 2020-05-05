@@ -55,27 +55,28 @@ class UploadImage extends React.Component {
                 onDrop={this.onImageDrop.bind(this)}
                 multiple={false}
                 accept="image/*"
-                styles={{ dropzone: { minHeight: 500 } }}
+                styles={{ dropzone: { minHeight: 50 } }}
               >
                 {({ getRootProps, getInputProps }) => (
                   <section>
-                    <div {...getRootProps()} style={{ minHeight: '85vh' }}>
+                    <div {...getRootProps()}>
                       <input {...getInputProps()} />
                       <p className="h5 grey-text text-center py-2">
                         Drag and drop an image, or click anywhere to select one from your computer
                       </p>
-                      {this.props.tripToEdit ? (
-                        <LightboxPage
-                          tripToEdit={this.props.tripToEdit}
-                          newPic={this.props.newPic}
-                          addPicStateFalse={this.props.addPicStateFalse}
-                        />
-                      ) : null}
                     </div>
                   </section>
                 )}
               </Dropzone>
             </form>
+            {this.props.tripToEdit ? (
+              <LightboxPage
+                tripToEdit={this.props.tripToEdit}
+                newPic={this.props.newPic}
+                addPicStateFalse={this.props.addPicStateFalse}
+                deleteImage={this.props.deleteImage}
+              />
+            ) : null}
           </MDBCardBody>
         </MDBCard>
       </MDBContainer>

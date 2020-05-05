@@ -1,18 +1,5 @@
 import React from 'react';
-import {
-  MDBContainer,
-  MDBRow,
-  MDBCol,
-  MDBInput,
-  MDBBtn,
-  MDBCard,
-  MDBCardBody,
-  MDBAlert,
-  MDBIcon,
-  MDBNavbar,
-  MDBNavbarNav,
-  MDBCollapse,
-} from 'mdbreact';
+import { MDBContainer, MDBRow, MDBCol, MDBAlert, MDBIcon, MDBNavbar, MDBNavbarNav, MDBCollapse } from 'mdbreact';
 import { Redirect } from 'react-router-dom';
 import Notes from './Notes';
 import moment from 'moment';
@@ -55,9 +42,6 @@ class Info extends React.Component {
       const trip = await response.json();
       if (trip.notes !== undefined) {
         trip.notes = JSON.parse(trip.notes);
-        console.log('getNotes');
-      } else {
-        trip.notes = trip.notes;
       }
       const tripToEdit = {
         id: trip.id,
@@ -200,6 +184,42 @@ class Info extends React.Component {
     this.setState({ newPic: false });
   };
 
+  deleteImage = async (idPic) => {
+    const { tripToEdit } = this.state;
+
+    tripToEdit.images = tripToEdit.images.filter((el) => el !== idPic);
+
+    this.setState({
+      tripToEdit,
+    });
+
+    const notes = tripToEdit.notes;
+    const name = tripToEdit.location;
+    const start_date = tripToEdit.startDate;
+    const end_date = tripToEdit.endDate;
+    const images = tripToEdit.images;
+    const id = tripToEdit.id;
+    try {
+      await fetch(SERVER_URL + '/trips/' + id + '?access_token=' + this.state.accessToken, {
+        method: 'put',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          start_date,
+          end_date,
+          notes,
+          images,
+        }),
+      });
+      this.addPicStateTrue();
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   render() {
     const { tripToEdit, newPic } = this.state;
     const bgEntete = { backgroundColor: '#F5F5F5' };
@@ -251,6 +271,7 @@ class Info extends React.Component {
                   newPic={newPic}
                   addPicStateFalse={this.addPicStateFalse}
                   updateTripImages={this.updateTripImages}
+                  deleteImage={this.deleteImage}
                 />
               </MDBCol>
               <MDBCol size="6" style={{ paddingLeft: '0px', paddingRight: '0px' }}>

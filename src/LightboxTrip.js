@@ -40,6 +40,7 @@ class LightboxTrip extends React.Component {
       if (tripSrc.images[0] !== undefined) {
         image = tripSrc.images[0];
       }
+
       return (
         <MDBCol md="4" key={tripIndex} style={{ paddingLeft: '3px', paddingRight: '3px' }}>
           <figure>
@@ -84,31 +85,20 @@ class LightboxTrip extends React.Component {
     const scrollContainerStyle = { maxWidth: '750px', maxHeight: '600px' };
     return (
       <MDBContainer fluid>
-        <div className="scrollbar scrollbar-deep-blue mt-3 mx-auto thin" style={scrollContainerStyle}>
+        <div className="scrollbar mt-3 mx-auto thin" style={scrollContainerStyle}>
           <div className="mdb-lightbox no-margin">
-            <MDBRow>{this.renderImages()}</MDBRow>
+            <MDBRow>
+              {this.renderImages()}
+              <MDBCol md="4" middle key={tripIndex} style={{ paddingLeft: '3px', paddingRight: '3px' }}>
+                <button onClick={() => this.props.openModalCreate()} className="unstyled-button mx-4">
+                  <p>
+                    <MDBIcon icon="plus" size="5x" className="grey-text mx-xl-5" />
+                  </p>
+                </button>
+              </MDBCol>
+            </MDBRow>
           </div>
         </div>
-        {isOpen && (
-          <Lightbox
-            color="rgba-white-strong"
-            mainSrc={trips[tripIndex]}
-            nextSrc={trips[(tripIndex + 1) % trips.length]}
-            prevSrc={trips[(tripIndex + trips.length - 1) % trips.length]}
-            imageTitle={tripIndex + 1 + '/' + trips.length}
-            onCloseRequest={() => this.setState({ isOpen: false })}
-            onMovePrevRequest={() =>
-              this.setState({
-                tripIndex: (tripIndex + trips.length - 1) % trips.length,
-              })
-            }
-            onMoveNextRequest={() =>
-              this.setState({
-                tripIndex: (tripIndex + 1) % trips.length,
-              })
-            }
-          />
-        )}
       </MDBContainer>
     );
   }

@@ -1,22 +1,9 @@
 import React, { Component } from 'react';
-import Planning from './Planning';
-import Form from './Form';
 import Modal from './Modal';
 import Map from './Map';
 import LightboxTrip from './LightboxTrip';
 import moment from 'moment';
-import {
-  MDBContainer,
-  MDBCol,
-  MDBRow,
-  MDBBtn,
-  MDBIcon,
-  MDBTooltip,
-  MDBNavbar,
-  MDBCollapse,
-  MDBNavbarNav,
-  MDBTypography,
-} from 'mdbreact';
+import { MDBContainer, MDBCol, MDBRow, MDBIcon, MDBNavbar, MDBCollapse, MDBNavbarNav } from 'mdbreact';
 import { Redirect } from 'react-router-dom';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -308,9 +295,6 @@ class App extends Component {
           </MDBCol>
 
           <MDBCol size="6" style={{ paddingTop: '10px' }}>
-            <button onClick={this.openModalCreate} className="round-btn">
-              <MDBIcon icon="plus" size="lg" />
-            </button>
             {trip ? (
               <LightboxTrip
                 tripData={trip}
@@ -318,15 +302,10 @@ class App extends Component {
                 addTripStateFalse={this.addTripStateFalse}
                 removeTrip={this.removeTrip}
                 openModalEdit={this.openModalEdit}
+                openModalCreate={this.openModalCreate}
                 getInfo={this.getInfo}
               />
             ) : null}
-            {/* <Planning
-              tripData={trip}
-              removeTrip={this.removeTrip}
-              openModalEdit={this.openModalEdit}
-              getInfo={this.getInfo}
-            /> */}
           </MDBCol>
         </MDBRow>
       </MDBContainer>
