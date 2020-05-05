@@ -1,8 +1,6 @@
 import React from 'react';
 import { MDBContainer, MDBRow, MDBCol, MDBMask, MDBView, MDBIcon } from 'mdbreact';
-import Lightbox from 'react-image-lightbox';
 import moment from 'moment';
-import './lightbox.css';
 import './scrollbar.css';
 
 class LightboxTrip extends React.Component {
@@ -81,7 +79,7 @@ class LightboxTrip extends React.Component {
   };
 
   render() {
-    const { tripIndex, isOpen, trips } = this.state;
+    const { tripIndex } = this.state;
     const scrollContainerStyle = { maxWidth: '750px', maxHeight: '600px' };
     return (
       <MDBContainer fluid>
