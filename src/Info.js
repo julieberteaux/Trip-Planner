@@ -1,9 +1,7 @@
 import React from 'react';
-import { MDBContainer, MDBRow, MDBCol, MDBInput, MDBBtn, MDBCard, MDBCardBody, MDBAlert, MDBIcon } from 'mdbreact';
+import { MDBContainer, MDBRow, MDBCol, MDBAlert, MDBIcon, MDBNavbar, MDBNavbarNav, MDBCollapse } from 'mdbreact';
 import { Redirect } from 'react-router-dom';
-import FormInfo from './FormInfo';
 import Notes from './Notes';
-import LightboxPage from './Lightbox';
 import moment from 'moment';
 import UploadImage from './UploadImage';
 
@@ -44,9 +42,6 @@ class Info extends React.Component {
       const trip = await response.json();
       if (trip.notes !== undefined) {
         trip.notes = JSON.parse(trip.notes);
-        console.log('getNotes');
-      } else {
-        trip.notes = trip.notes;
       }
       const tripToEdit = {
         id: trip.id,
@@ -189,54 +184,102 @@ class Info extends React.Component {
     this.setState({ newPic: false });
   };
 
+  deleteImage = async (idPic) => {
+    const { tripToEdit } = this.state;
+
+    tripToEdit.images = tripToEdit.images.filter((el) => el !== idPic);
+
+    this.setState({
+      tripToEdit,
+    });
+
+    const notes = tripToEdit.notes;
+    const name = tripToEdit.location;
+    const start_date = tripToEdit.startDate;
+    const end_date = tripToEdit.endDate;
+    const images = tripToEdit.images;
+    const id = tripToEdit.id;
+    try {
+      await fetch(SERVER_URL + '/trips/' + id + '?access_token=' + this.state.accessToken, {
+        method: 'put',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          start_date,
+          end_date,
+          notes,
+          images,
+        }),
+      });
+      this.addPicStateTrue();
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   render() {
     const { tripToEdit, newPic } = this.state;
+    const bgEntete = { backgroundColor: '#F5F5F5' };
     if (this.state.mainPage) {
       return <Redirect push to={`/`}></Redirect>;
     }
     return (
-      <div className="bg">
-        <MDBContainer fluid>
-          <MDBRow end>
-            {this.state.displaySuccess && (
-              <MDBAlert dismiss color="success">
-                Congrats, your trip has been updated !
-              </MDBAlert>
-            )}
-          </MDBRow>
-          <MDBRow middle>
-            <MDBCol size="10">
-              {tripToEdit ? (
-                <FormInfo
+      <div>
+        {tripToEdit ? (
+          <MDBContainer fluid>
+            <MDBRow>
+              <MDBNavbar style={bgEntete} expand="xs" scrolling fixed="top">
+                <MDBCollapse isOpen={true} navbar>
+                  <MDBNavbarNav left>
+                    <img
+                      src="/icons/logo.png"
+                      alt="Logo"
+                      classname="figure-img img-fluid z-depth-1"
+                      style={{ width: '60px' }}
+                    />
+                  </MDBNavbarNav>
+                  <MDBCol>
+                    <p className="title">{tripToEdit.location}</p>
+                    <p className="titleTripDate">
+                      {moment(tripToEdit.startDate).format('YYYY-MM-DD')} /{' '}
+                      {moment(tripToEdit.endDate).format('YYYY-MM-DD')}
+                    </p>
+                  </MDBCol>
+                  <MDBNavbarNav right>
+                    <button onClick={this.exitInfo} className="unstyled-button">
+                      <MDBIcon icon="chevron-circle-left" size="lg" />
+                    </button>
+                  </MDBNavbarNav>
+                </MDBCollapse>
+              </MDBNavbar>
+            </MDBRow>
+
+            <MDBRow end>
+              {this.state.displaySuccess && (
+                <MDBAlert dismiss color="success">
+                  Congrats, your trip has been updated !
+                </MDBAlert>
+              )}
+            </MDBRow>
+            <MDBRow style={{ paddingTop: '85px' }}>
+              <MDBCol size="6" style={{ paddingRight: '0px', paddingLeft: '0px' }}>
+                <UploadImage
                   tripToEdit={tripToEdit}
-                  handleDateChange={this.handleDateChange}
-                  handleChange={this.handleChange}
-                  onFormSubmit={this.onFormSubmit}
+                  newPic={newPic}
+                  addPicStateFalse={this.addPicStateFalse}
+                  updateTripImages={this.updateTripImages}
+                  deleteImage={this.deleteImage}
                 />
-              ) : null}
-            </MDBCol>
-            <MDBCol middle size="2">
-              <MDBBtn rounded outline color="primary" tag="a" onClick={() => this.exitInfo()}>
-                <MDBIcon icon="chevron-circle-left" className="mr-1" /> Return
-              </MDBBtn>
-            </MDBCol>
-          </MDBRow>
-          <MDBRow middle>
-            <MDBCol size="6">
-              <MDBRow>
-                <UploadImage updateTripImages={this.updateTripImages} />
-              </MDBRow>
-              <MDBRow>
-                {tripToEdit ? (
-                  <LightboxPage tripToEdit={tripToEdit} newPic={newPic} addPicStateFalse={this.addPicStateFalse} />
-                ) : null}
-              </MDBRow>
-            </MDBCol>
-            <MDBCol size="6">
-              {tripToEdit ? <Notes tripToEdit={tripToEdit} updateTripNotes={this.updateTripNotes} /> : null}
-            </MDBCol>
-          </MDBRow>
-        </MDBContainer>
+              </MDBCol>
+              <MDBCol size="6" style={{ paddingLeft: '0px', paddingRight: '0px' }}>
+                {tripToEdit ? <Notes tripToEdit={tripToEdit} updateTripNotes={this.updateTripNotes} /> : null}
+              </MDBCol>
+            </MDBRow>
+          </MDBContainer>
+        ) : null}
       </div>
     );
   }

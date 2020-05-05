@@ -22,7 +22,6 @@ class Map extends Component {
       });
 
       geocoder.geocode(city.location, (results) => {
-        console.log(results);
         if (results[0]) {
           var latLng = new leaflet.LatLng(results[0].center.lat, results[0].center.lng);
 
@@ -78,7 +77,7 @@ class Map extends Component {
   };
 
   componentDidMount() {
-    this.mymap = leaflet.map('mapid').setView([-8.3405, 115.092], 9);
+    this.mymap = leaflet.map('mapid').setView([20, 40], 2);
     this.mapMarkers = [];
 
     leaflet
@@ -103,7 +102,7 @@ class Map extends Component {
 
   render() {
     return (
-      <MDBContainer>
+      <MDBContainer fluid style={{ paddingLeft: '0px', paddingRight: '0px' }}>
         <MDBRow>
           {this.state.erreurGeocode && (
             <MDBAlert dismiss color="warning">

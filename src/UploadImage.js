@@ -1,6 +1,7 @@
 import React from 'react';
 import Dropzone from 'react-dropzone';
 import { MDBContainer, MDBCard, MDBCardBody } from 'mdbreact';
+import LightboxPage from './Lightbox';
 
 const CLOUDINARY_UPLOAD_PRESET = 'ktbt9osv';
 const CLOUDINARY_UPLOAD_URL = 'https://api.cloudinary.com/v1_1/julieb/upload';
@@ -46,7 +47,7 @@ class UploadImage extends React.Component {
 
   render() {
     return (
-      <MDBContainer fluid>
+      <MDBContainer fluid style={{ paddingLeft: '0px', paddingRight: '0px' }}>
         <MDBCard>
           <MDBCardBody>
             <form>
@@ -54,20 +55,28 @@ class UploadImage extends React.Component {
                 onDrop={this.onImageDrop.bind(this)}
                 multiple={false}
                 accept="image/*"
-                styles={{ dropzone: { minHeight: 200, maxHeight: 250 } }}
+                styles={{ dropzone: { minHeight: 50 } }}
               >
                 {({ getRootProps, getInputProps }) => (
                   <section>
                     <div {...getRootProps()}>
                       <input {...getInputProps()} />
                       <p className="h5 grey-text text-center py-2">
-                        Drag and drop some files here, or click to select files
+                        Drag and drop an image, or click anywhere to select one from your computer
                       </p>
                     </div>
                   </section>
                 )}
               </Dropzone>
             </form>
+            {this.props.tripToEdit ? (
+              <LightboxPage
+                tripToEdit={this.props.tripToEdit}
+                newPic={this.props.newPic}
+                addPicStateFalse={this.props.addPicStateFalse}
+                deleteImage={this.props.deleteImage}
+              />
+            ) : null}
           </MDBCardBody>
         </MDBCard>
       </MDBContainer>
