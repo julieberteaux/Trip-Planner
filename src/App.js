@@ -253,23 +253,21 @@ class App extends Component {
     return (
       <MDBContainer fluid>
         <MDBRow>
-          <MDBNavbar style={bgEntete} expand="xs" scrolling fixed="top">
-            <MDBCollapse isOpen={true} navbar>
-              <MDBNavbarNav left>
-                <img
-                  src="/icons/logo.png"
-                  alt="Logo"
-                  classname="figure-img img-fluid z-depth-1"
-                  style={{ width: '60px' }}
-                />
-              </MDBNavbarNav>
-              <p className="title">My Trip Planner</p>
-              <MDBNavbarNav right>
-                <button onClick={this.logOut} className="unstyled-button">
-                  <MDBIcon icon="sign-out-alt" size="lg" />
-                </button>
-              </MDBNavbarNav>
-            </MDBCollapse>
+          <MDBNavbar style={bgEntete} scrolling fixed="top">
+            <MDBNavbarNav left>
+              <img
+                src="/icons/logo.png"
+                alt="Logo"
+                classname="figure-img img-fluid z-depth-1"
+                style={{ width: '60px' }}
+              />
+            </MDBNavbarNav>
+            <p className="title">My Trip Planner</p>
+            <MDBNavbarNav right>
+              <button onClick={this.logOut} className="unstyled-button">
+                <MDBIcon icon="sign-out-alt" size="lg" />
+              </button>
+            </MDBNavbarNav>
           </MDBNavbar>
         </MDBRow>
 

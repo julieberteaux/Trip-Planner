@@ -231,29 +231,27 @@ class Info extends React.Component {
         {tripToEdit ? (
           <MDBContainer fluid>
             <MDBRow>
-              <MDBNavbar style={bgEntete} expand="xs" scrolling fixed="top">
-                <MDBCollapse isOpen={true} navbar>
-                  <MDBNavbarNav left>
-                    <img
-                      src="/icons/logo.png"
-                      alt="Logo"
-                      classname="figure-img img-fluid z-depth-1"
-                      style={{ width: '60px' }}
-                    />
-                  </MDBNavbarNav>
-                  <MDBCol>
-                    <p className="title">{tripToEdit.location}</p>
-                    <p className="titleTripDate">
-                      {moment(tripToEdit.startDate).format('YYYY-MM-DD')} /{' '}
-                      {moment(tripToEdit.endDate).format('YYYY-MM-DD')}
-                    </p>
-                  </MDBCol>
-                  <MDBNavbarNav right>
-                    <button onClick={this.exitInfo} className="unstyled-button">
-                      <MDBIcon icon="chevron-circle-left" size="lg" />
-                    </button>
-                  </MDBNavbarNav>
-                </MDBCollapse>
+              <MDBNavbar style={bgEntete} scrolling fixed="top">
+                <MDBNavbarNav left>
+                  <img
+                    src="/icons/logo.png"
+                    alt="Logo"
+                    classname="figure-img img-fluid z-depth-1"
+                    style={{ width: '60px' }}
+                  />
+                </MDBNavbarNav>
+                <MDBCol>
+                  <p className="title">{tripToEdit.location}</p>
+                  <p className="titleTripDate">
+                    {moment(tripToEdit.startDate).format('YYYY-MM-DD')} /{' '}
+                    {moment(tripToEdit.endDate).format('YYYY-MM-DD')}
+                  </p>
+                </MDBCol>
+                <MDBNavbarNav right>
+                  <button onClick={this.exitInfo} className="unstyled-button">
+                    <MDBIcon icon="chevron-circle-left" size="lg" />
+                  </button>
+                </MDBNavbarNav>
               </MDBNavbar>
             </MDBRow>
 

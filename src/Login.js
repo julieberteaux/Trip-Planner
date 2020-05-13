@@ -78,26 +78,24 @@ class Login extends React.Component {
     return (
       <MDBContainer>
         <MDBRow>
-          <MDBNavbar style={bgEntete} expand="xs" scrolling fixed="top">
-            <MDBCollapse isOpen={true} navbar>
-              <MDBNavbarNav left>
-                <img
-                  src="/icons/logo.png"
-                  alt="Logo"
-                  classname="figure-img img-fluid z-depth-1"
-                  style={{ width: '60px' }}
-                />
-              </MDBNavbarNav>
-              <p className="title">My Trip Planner</p>
-              <MDBNavbarNav right>
-                <img
-                  src="/icons/logo.png"
-                  alt="Logo"
-                  classname="figure-img img-fluid z-depth-1"
-                  style={{ width: '60px' }}
-                />
-              </MDBNavbarNav>
-            </MDBCollapse>
+          <MDBNavbar style={{ backgroundColor: '#F5F5F5' }} scrolling fixed="top">
+            <MDBNavbarNav left>
+              <img
+                src="/icons/logo.png"
+                alt="Logo"
+                classname="figure-img img-fluid z-depth-1"
+                style={{ width: '60px' }}
+              />
+            </MDBNavbarNav>
+            <p className="title">My Trip Planner</p>
+            <MDBNavbarNav right>
+              <img
+                src="/icons/logo.png"
+                alt="Logo"
+                classname="figure-img img-fluid z-depth-1"
+                style={{ width: '60px' }}
+              />
+            </MDBNavbarNav>
           </MDBNavbar>
         </MDBRow>
         <MDBRow style={{ paddingTop: '85px' }}>
